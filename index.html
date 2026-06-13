@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Jai Bhawani Motors — Hero MotoCorp, Pallu</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root{
+  --ink:    #0A0A08;
+  --bone:   #F0EDE6;
+  --sand:   #D8D2C6;
+  --fire:   #D42B1E;
+  --ember:  #A81F14;
+  --chrome: #8A8A80;
+  --glow:   rgba(212,43,30,0.12);
+  --gap:    1.5px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--ink);
+  color:var(--bone);
+  font-family:'DM Sans',sans-serif;
+  font-weight:300;
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* ─────────────────────────────────────────
+   LOADER — spinning odometer ring
+───────────────────────────────────────── */
+#loader{
+  position:fixed;inset:0;z-index:9000;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:1.5rem;
+  transition:opacity .6s ease;
+}
+#loader.fade{opacity:0;pointer-events:none}
+#loader.gone{display:none}
+.odo-ring{
+  width:72px;height:72px;border-radius:50%;
+  border:2px solid rgba(240,237,230,.08);
+  border-top-color:var(--fire);
+  animation:spin .9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-label{
+  font-family:'DM Mono',monospace;
+  font-size:.65rem;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--chrome);
+}
+
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.5rem;
+  background:rgba(10,10,8,.88);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(240,237,230,.06);
+}
+.n-logo{
+  display:flex;align-items:center;gap:.8rem;text-decoration:none;
+}
+.n-mark{
+  width:32px;height:32px;background:var(--fire);
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:#fff;letter-spacing:.02em;
+}
+.n-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;letter-spacing:.12em;color:var(--bone);line-height:1.1;
+}
+.n-name small{
+  display:block;font-family:'DM Mono',monospace;
+  font-size:.46rem;letter-spacing:.22em;color:var(--chrome);text-transform:uppercase;
+}
+.n-links{display:flex;gap:2.2rem;list-style:none}
+.n-links a{
+  font-family:'DM Mono',monospace;font-size:.65rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--chrome);text-decoration:none;transition:color .2s;
+}
+.n-links a:hover{color:var(--bone)}
+.n-call{
+  font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--fire);text-decoration:none;
+  border:1px solid rgba(212,43,30,.35);padding:.38rem .9rem;border-radius:2px;
+  transition:background .2s,color .2s;
+}
+.n-call:hover{background:var(--fire);color:#fff}
+.ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.5rem}
+.ham span{width:20px;height:1.5px;background:var(--bone)}
+@media(max-width:760px){
+  .n-links,.n-call{display:none}
+  .ham{display:flex}
+  .n-links.open{
+    display:flex;flex-direction:column;
+    position:fixed;top:56px;left:0;right:0;
+    background:rgba(10,10,8,.97);
+    padding:1.5rem 2.5rem;gap:1.6rem;
+    border-bottom:1px solid rgba(240,237,230,.06);
+  }
+}
+
+/* ─────────────────────────────────────────
+   HERO  — the signature element:
+   A full-bleed diagonal split.
+   Left: massive white type on ink.
+   Right: a tilted red rectangle as a
+   "fuel gauge" that animates to full.
+───────────────────────────────────────── */
+#hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 420px;
+  padding-top:56px;
+  position:relative;overflow:hidden;
+}
+@media(max-width:900px){#hero{grid-template-columns:1fr;min-height:auto;padding-bottom:3rem}}
+
+.h-left{
+  padding:5rem 3rem 4rem 4rem;
+  display:flex;flex-direction:column;
+  justify-content:center;position:relative;z-index:2;
+}
+@media(max-width:600px){.h-left{padding:3.5rem 1.5rem 2rem}}
+
+.h-kicker{
+  font-family:'DM Mono',monospace;
+  font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--fire);margin-bottom:1.8rem;
+  display:flex;align-items:center;gap:.7rem;
+}
+.h-kicker::before{content:'';width:28px;height:1px;background:var(--fire)}
+
+.h-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,14vw,11.5rem);
+  line-height:.88;letter-spacing:.02em;
+  color:var(--bone);margin-bottom:2.2rem;
+}
+.h-title .fire{color:var(--fire)}
+.h-title .out{
+  -webkit-text-stroke:1px var(--sand);
+  color:transparent;
+}
+
+.h-body{
+  max-width:400px;font-size:.93rem;
+  color:var(--chrome);line-height:1.75;margin-bottom:2.5rem;
+}
+
+.h-actions{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-solid{
+  background:var(--fire);color:#fff;
+  padding:.75rem 1.8rem;border:none;border-radius:2px;
+  font-family:'DM Mono',monospace;font-size:.7rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  text-decoration:none;display:inline-block;
+  transition:background .2s,transform .15s;cursor:pointer;
+}
+.btn-solid:hover{background:var(--ember);transform:translateY(-1px)}
+.btn-ghost{
+  background:transparent;color:var(--bone);
+  padding:.75rem 1.8rem;border:1px solid rgba(240,237,230,.18);border-radius:2px;
+  font-family:'DM Mono',monospace;font-size:.7rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  text-decoration:none;display:inline-block;
+  transition:border-color .2s,transform .15s;
+}
+.btn-ghost:hover{border-color:var(--bone);transform:translateY(-1px)}
+
+/* fuel gauge panel */
+.h-right{
+  position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#1A0800 0%,var(--ink) 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+@media(max-width:900px){.h-right{height:260px}}
+
+.gauge-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:1rem;
+  position:relative;z-index:2;
+}
+.gauge-title{
+  font-family:'DM Mono',monospace;font-size:.58rem;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--chrome);
+}
+.gauge-bar{
+  width:8px;height:200px;
+  background:rgba(240,237,230,.06);
+  border-radius:4px;position:relative;overflow:hidden;
+}
+.gauge-fill{
+  position:absolute;bottom:0;left:0;right:0;
+  height:0%;background:linear-gradient(to top,var(--fire),#FF6B4A);
+  border-radius:4px;
+  transition:height 2.2s cubic-bezier(.16,1,.3,1);
+}
+.gauge-fill.charged{height:87%}
+.gauge-pct{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.8rem;color:var(--fire);letter-spacing:.04em;line-height:1;
+}
+.gauge-pct small{font-size:.9rem;color:var(--chrome)}
+
+.h-right::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 60%,rgba(212,43,30,.18) 0%,transparent 70%);
+}
+
+/* stats bar */
+.h-stats{
+  display:flex;
+  border-top:1px solid rgba(240,237,230,.07);
+  margin-top:3rem;
+}
+.h-stat{
+  flex:1;padding:1.2rem 0;
+  border-right:1px solid rgba(240,237,230,.07);
+}
+.h-stat:last-child{border-right:none}
+.h-stat-n{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2rem;color:var(--bone);line-height:1;letter-spacing:.03em;
+}
+.h-stat-l{
+  font-family:'DM Mono',monospace;
+  font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--chrome);margin-top:.2rem;
+}
+
+/* ─────────────────────────────────────────
+   DEAL TICKER — scrolling marquee
+───────────────────────────────────────── */
+.ticker{
+  background:var(--fire);
+  overflow:hidden;height:38px;display:flex;align-items:center;
+}
+.ticker-track{
+  display:flex;gap:0;white-space:nowrap;
+  animation:marquee 22s linear infinite;
+}
+.ticker-track span{
+  font-family:'DM Mono',monospace;font-size:.65rem;
+  letter-spacing:.15em;text-transform:uppercase;color:#fff;
+  padding:0 2.5rem;border-right:1px solid rgba(255,255,255,.25);
+}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ─────────────────────────────────────────
+   SECTION SHELL
+───────────────────────────────────────── */
+.sec{padding:5.5rem 2.5rem}
+.si{max-width:1160px;margin:0 auto}
+
+.eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:.58rem;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--fire);margin-bottom:.8rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--fire)}
+
+h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.6rem,6vw,5rem);
+  line-height:.92;letter-spacing:.03em;margin-bottom:1rem;color:var(--bone);
+}
+h2 .accent{color:var(--fire)}
+h2 .ghost{-webkit-text-stroke:1px var(--sand);color:transparent}
+
+.lead{
+  color:var(--chrome);max-width:500px;
+  font-size:.92rem;margin-bottom:3rem;line-height:1.75;
+}
+
+/* ─────────────────────────────────────────
+   BIKES — asymmetric card strip
+───────────────────────────────────────── */
+#bikes{background:var(--ink)}
+
+.bike-strip{display:flex;flex-direction:column;gap:var(--gap)}
+
+.bike-row{
+  display:grid;gap:var(--gap);
+  background:rgba(240,237,230,.04);
+}
+.bike-row.row2{grid-template-columns:1fr 1fr}
+.bike-row.row3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:720px){.bike-row.row2,.bike-row.row3{grid-template-columns:1fr}}
+
+.bk{
+  background:var(--ink);
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;overflow:hidden;
+  opacity:0;transform:translateX(-18px);
+  transition:opacity .7s,transform .7s;
+}
+.bk.vis{opacity:1;transform:translateX(0)}
+.bk:hover .bk-img img{transform:scale(1.06) rotate(-1deg)}
+
+.bk-img{
+  background:#0F0F0D;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;min-height:180px;
+}
+.bk-img img{
+  width:100%;height:100%;object-fit:contain;
+  padding:.8rem;transition:transform .5s cubic-bezier(.25,1,.5,1);
+  display:block;
+}
+
+.bk-info{
+  padding:1.8rem 1.5rem;
+  display:flex;flex-direction:column;gap:.6rem;
+  border-left:1px solid rgba(240,237,230,.05);
+}
+
+.bk-tag{
+  font-family:'DM Mono',monospace;font-size:.55rem;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--fire);
+}
+.bk-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.55rem;letter-spacing:.04em;line-height:1;color:var(--bone);
+}
+.bk-sub{font-size:.78rem;color:var(--chrome);line-height:1.5;margin-top:.1rem}
+
+.bk-specs{
+  display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.3rem;
+}
+.bk-sp{
+  font-family:'DM Mono',monospace;font-size:.58rem;
+  letter-spacing:.1em;color:var(--chrome);
+  border:1px solid rgba(240,237,230,.1);
+  padding:.2rem .5rem;border-radius:1px;
+}
+
+.bk-colors{display:flex;gap:.4rem;align-items:center;margin-top:.2rem}
+.cc{
+  width:10px;height:10px;border-radius:50%;
+  border:1px solid rgba(240,237,230,.18);
+  cursor:default;
+}
+
+.bk-bottom{
+  margin-top:auto;padding-top:.8rem;
+  border-top:1px solid rgba(240,237,230,.06);
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:.5rem;
+}
+.bk-price{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.9rem;letter-spacing:.03em;line-height:1;color:var(--bone);
+}
+.bk-pnote{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.1em;color:var(--chrome);text-transform:uppercase}
+
+.wa-link{
+  display:flex;align-items:center;gap:.4rem;
+  font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+  color:#25D366;text-decoration:none;
+  border:1px solid rgba(37,211,102,.2);padding:.32rem .65rem;border-radius:1px;
+  transition:background .2s;white-space:nowrap;
+}
+.wa-link:hover{background:rgba(37,211,102,.1)}
+
+/* small cards — for row of 3 */
+.bk.small{grid-template-columns:1fr}
+.bk.small .bk-img{min-height:140px}
+.bk.small .bk-info{padding:1.2rem}
+.bk.small .bk-name{font-size:1.2rem}
+.bk.small .bk-price{font-size:1.5rem}
+
+/* ─────────────────────────────────────────
+   WARRANTY PANEL
+───────────────────────────────────────── */
+.warr-block{
+  margin-top:3rem;
+  border:1px solid rgba(212,43,30,.2);
+  background:linear-gradient(120deg,rgba(212,43,30,.05) 0%,transparent 60%);
+  padding:2rem;
+}
+.warr-head{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;letter-spacing:.06em;color:var(--fire);
+  margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.warr-head::before{content:'';width:3px;height:1.5rem;background:var(--fire)}
+.warr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:rgba(240,237,230,.05)}
+.wi{background:var(--ink);padding:1.2rem}
+.wi strong{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.04em;display:block;margin-bottom:.3rem;color:var(--bone)}
+.wi p{font-size:.78rem;color:var(--chrome);line-height:1.6;margin:0}
+
+/* ─────────────────────────────────────────
+   SERVICES — diagonal stripe layout
+───────────────────────────────────────── */
+#services{
+  background:#0E0D0C;
+  position:relative;overflow:hidden;
+}
+#services::before{
+  content:'WORKSHOP';
+  position:absolute;right:-2rem;top:50%;transform:translateY(-50%) rotate(90deg);
+  font-family:'Bebas Neue',sans-serif;font-size:8rem;letter-spacing:.08em;
+  color:rgba(240,237,230,.02);white-space:nowrap;pointer-events:none;
+  transform-origin:center;
+}
+
+.srv-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:var(--gap);
+  background:rgba(240,237,230,.04);
+  border:1px solid rgba(240,237,230,.04);
+}
+@media(max-width:860px){.srv-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.srv-grid{grid-template-columns:1fr}}
+
+.sv{
+  background:#0E0D0C;padding:2rem 1.8rem;
+  opacity:0;transform:translateY(22px);
+  transition:opacity .6s,transform .6s;
+}
+.sv.vis{opacity:1;transform:translateY(0)}
+.sv:hover{background:#131210}
+
+.sv-ico{font-size:1.6rem;margin-bottom:.8rem;display:block}
+.sv-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;letter-spacing:.05em;color:var(--bone);margin-bottom:.7rem;
+}
+.sv ul{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+.sv ul li{
+  font-size:.77rem;color:var(--chrome);padding-left:.9rem;position:relative;line-height:1.5;
+}
+.sv ul li::before{
+  content:'—';position:absolute;left:0;
+  color:var(--fire);font-size:.7rem;line-height:1.5;
+}
+
+/* ─────────────────────────────────────────
+   PROTOCOLS — horizontal timeline
+───────────────────────────────────────── */
+#protocols{background:var(--ink)}
+.proto-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;margin-top:3rem;
+  border:1px solid rgba(240,237,230,.06);
+}
+@media(max-width:860px){.proto-row{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.proto-row{grid-template-columns:1fr}}
+
+.pr{
+  padding:2rem 1.6rem;
+  border-right:1px solid rgba(240,237,230,.06);
+  position:relative;
+  opacity:0;transform:translateY(18px);
+  transition:opacity .65s,transform .65s;
+}
+.pr:last-child{border-right:none}
+.pr.vis{opacity:1;transform:translateY(0)}
+
+.pr-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3.5rem;line-height:1;
+  color:rgba(212,43,30,.18);letter-spacing:.03em;margin-bottom:.6rem;
+}
+.pr-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1rem;letter-spacing:.06em;color:var(--bone);margin-bottom:.5rem;
+}
+.pr p{font-size:.78rem;color:var(--chrome);line-height:1.65;margin:0}
+.pr-accent{
+  position:absolute;top:0;left:0;width:3px;height:100%;
+  background:var(--fire);opacity:0;transition:opacity .3s;
+}
+.pr:hover .pr-accent{opacity:1}
+
+/* ─────────────────────────────────────────
+   CONTACT
+───────────────────────────────────────── */
+#contact{background:#0A0A08}
+
+.contact-shell{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;align-items:start;margin-top:3rem;
+}
+@media(max-width:760px){.contact-shell{grid-template-columns:1fr;gap:2.5rem}}
+
+.ct-list{display:flex;flex-direction:column;gap:1.6rem}
+.ct-row{display:flex;gap:1rem;align-items:flex-start}
+.ct-ico{
+  width:36px;height:36px;flex-shrink:0;
+  border:1px solid rgba(212,43,30,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;color:var(--fire);
+}
+.ct-label{
+  font-family:'DM Mono',monospace;font-size:.55rem;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--fire);margin-bottom:.2rem;
+}
+.ct-val{font-size:.9rem;color:var(--bone);line-height:1.5}
+.ct-val a{color:var(--bone);text-decoration:none;transition:color .2s}
+.ct-val a:hover{color:var(--fire)}
+
+.ct-map{
+  border:1px solid rgba(240,237,230,.06);
+  background:#0E0D0C;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2.5rem;text-align:center;gap:.8rem;min-height:280px;
+}
+.map-pin{
+  width:48px;height:48px;background:var(--fire);
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;margin-bottom:.4rem;
+}
+.ct-map strong{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.3rem;letter-spacing:.06em;color:var(--bone);
+}
+.ct-map p{font-size:.8rem;color:var(--chrome);line-height:1.6;margin:0}
+.ct-map .fire-text{color:var(--fire);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em}
+
+.ct-btns{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+footer{
+  background:#070706;
+  border-top:1px solid rgba(240,237,230,.05);
+  padding:2.5rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1.5rem;
+}
+.ft-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.2rem;letter-spacing:.1em;color:var(--bone);
+}
+.ft-logo span{color:var(--fire)}
+.ft-note{
+  font-family:'DM Mono',monospace;
+  font-size:.55rem;letter-spacing:.08em;
+  color:rgba(240,237,230,.2);max-width:440px;line-height:1.8;
+}
+
+/* ─────────────────────────────────────────
+   FLOATING WA
+───────────────────────────────────────── */
+.fwa{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:400;
+  width:50px;height:50px;border-radius:50%;background:#25D366;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 22px rgba(37,211,102,.35);text-decoration:none;
+  transition:transform .2s,box-shadow .2s;
+}
+.fwa:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(37,211,102,.5)}
+
+/* ─────────────────────────────────────────
+   REVEAL
+───────────────────────────────────────── */
+.rev{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}
+.rev.vis{opacity:1;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){
+  .bk,.sv,.pr,.rev{opacity:1;transform:none;transition:none}
+  .gauge-fill{transition:none}
+  .ticker-track{animation:none}
+  .odo-ring{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="odo-ring"></div>
+  <div class="loader-label">Jai Bhawani Motors</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="n-logo">
+    <div class="n-mark">JB</div>
+    <div class="n-name">Jai Bhawani Motors<small>Authorised Hero MotoCorp Dealer</small></div>
+  </a>
+  <ul class="n-links" id="nlinks">
+    <li><a href="#bikes">Bikes</a></li>
+    <li><a href="#services">Workshop</a></li>
+    <li><a href="#protocols">Buying</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="tel:9672000078" class="n-call">96720 00078</a>
+  <div class="ham" onclick="document.getElementById('nlinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="h-left">
+    <div class="h-kicker">Authorised Hero MotoCorp Dealer &nbsp;·&nbsp; Pallu, Rajasthan</div>
+    <h1 class="h-title">
+      <span class="out">RIDE</span><br>
+      <span class="fire">WITH</span><br>
+      PRIDE
+    </h1>
+    <p class="h-body">
+      Jai Bhawani Motors is Pallu's trusted Hero MotoCorp showroom — genuine bikes, genuine parts, and service that keeps you on the road.
+    </p>
+    <div class="h-actions">
+      <a href="#bikes" class="btn-solid">See All Bikes</a>
+      <a href="#contact" class="btn-ghost">Find Us</a>
+    </div>
+    <div class="h-stats">
+      <div class="h-stat"><div class="h-stat-n">12+</div><div class="h-stat-l">Models</div></div>
+      <div class="h-stat"><div class="h-stat-n">5 YR</div><div class="h-stat-l">Warranty</div></div>
+      <div class="h-stat"><div class="h-stat-n">EMI</div><div class="h-stat-l">Finance</div></div>
+      <div class="h-stat"><div class="h-stat-n">OEM</div><div class="h-stat-l">Spares</div></div>
+    </div>
+  </div>
+  <div class="h-right">
+    <div class="gauge-wrap">
+      <div class="gauge-title">Fuel of Ambition</div>
+      <div class="gauge-bar"><div class="gauge-fill" id="gfill"></div></div>
+      <div class="gauge-pct" id="gpct">0<small>%</small></div>
+      <div class="gauge-title" style="color:var(--fire)">Hero-Powered</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker">
+    <span>🔥 Latest deals available — Call 9672000078</span>
+    <span>Hero HF Deluxe from ₹58,646*</span>
+    <span>Splendor+ XTEC from ₹79,870*</span>
+    <span>Xtreme 125R from ₹92,127*</span>
+    <span>5-Year Warranty on all new bikes</span>
+    <span>Easy EMI — Rural credit available</span>
+    <span>Pre-booking token ₹1,500 only</span>
+    <span>Genuine Hero spare parts counter</span>
+    <span>🔥 Latest deals available — Call 9672000078</span>
+    <span>Hero HF Deluxe from ₹58,646*</span>
+    <span>Splendor+ XTEC from ₹79,870*</span>
+    <span>Xtreme 125R from ₹92,127*</span>
+    <span>5-Year Warranty on all new bikes</span>
+    <span>Easy EMI — Rural credit available</span>
+    <span>Pre-booking token ₹1,500 only</span>
+    <span>Genuine Hero spare parts counter</span>
+  </div>
+</div>
+
+<!-- BIKES -->
+<section class="sec" id="bikes">
+  <div class="si">
+    <div class="eyebrow rev">Our Collection</div>
+    <h2 class="rev">HERO <span class="accent">LINEUP</span><br><span class="ghost">PALLU</span></h2>
+    <p class="lead rev">All prices are approximate ex-showroom. On-road price includes registration, insurance & charges. Contact us for exact current pricing and active offers.</p>
+
+    <div class="bike-strip">
+
+      <!-- ROW 1: 2 wide cards -->
+      <div class="bike-row row2">
+
+        <div class="bk">
+          <div class="bk-img"><img src="20823.jpg" alt="Hero HF Deluxe i3S Black" loading="lazy"/></div>
+          <div class="bk-info">
+            <div class="bk-tag">Entry Commuter</div>
+            <div class="bk-name">Hero HF Deluxe i3S</div>
+            <div class="bk-sub">India's most affordable Hero — built for daily reliability</div>
+            <div class="bk-specs">
+              <span class="bk-sp">97.2 cc</span>
+              <span class="bk-sp">65 kmpl</span>
+              <span class="bk-sp">110 kg</span>
+            </div>
+            <div class="bk-colors">
+              <div class="cc" style="background:#1A1A1A" title="Black Tornado Grey"></div>
+              <div class="cc" style="background:#CC2200" title="Sports Red"></div>
+              <div class="cc" style="background:#1A3A6B" title="Heavy Grey Blue"></div>
+            </div>
+            <div class="bk-bottom">
+              <div><div class="bk-price">₹58,646*</div><div class="bk-pnote">Approx. Ex-showroom</div></div>
+              <a class="wa-link" href="https://wa.me/919672000078?text=Hi%2C+I+want+details+on+the+Hero+HF+Deluxe+i3S." target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Enquire
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bk">
+          <div class="bk-img"><img src="20819.jpg" alt="Hero HF Deluxe Red" loading="lazy"/></div>
+          <div class="bk-info">
+            <div class="bk-tag">Entry Commuter</div>
+            <div class="bk-name">Hero HF Deluxe<br><span style="color:var(--fire)">Sports Red</span></div>
+            <div class="bk-sub">Bold red colourway — same trusted 97cc engine</div>
+            <div class="bk-specs">
+              <span class="bk-sp">97.2 cc</span>
+              <span class="bk-sp">65 kmpl</span>
+              <span class="bk-sp">7.91 bhp</span>
+            </div>
+            <div class="bk-colors">
+              <div class="cc" style="background:#CC2200"></div>
+              <div class="cc" style="background:#1A1A1A"></div>
+            </div>
+            <div class="bk-bottom">
+              <div><div class="bk-price">₹58,646*</div><div class="bk-pnote">Approx. Ex-showroom</div></div>
+              <a class="wa-link" href="https://wa.me/919672000078?text=Hi%2C+I+want+details+on+the+Hero+HF+Deluxe+Sports+Red." target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Enquire
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /row2 -->
+
+      <!-- ROW 2: 2 wide cards -->
+      <div class="bike-row row2">
+
+        <div class="bk">
+          <div class="bk-img"><img src="20822.jpg" alt="Hero Splendor Plus XTEC" loading="lazy"/></div>
+          <div class="bk-info">
+            <div class="bk-tag">Best Seller · XTEC</div>
+            <div class="bk-name">Hero Splendor+<br><span style="color:var(--fire)">XTEC</span></div>
+            <div class="bk-sub">Smart tech features on the world's most trusted commuter</div>
+            <div class="bk-specs">
+              <span class="bk-sp">97.2 cc</span>
+              <span class="bk-sp">65 kmpl</span>
+              <span class="bk-sp">112 kg</span>
+            </div>
+            <div class="bk-colors">
+              <div class="cc" style="background:#111111" title="Matte Canvas Black"></div>
+              <div class="cc" style="background:#4A4A6A" title="Tornado Grey"></div>
+              <div class="cc" style="background:#CC2200" title="Blazing Red"></div>
+            </div>
+            <div class="bk-bottom">
+              <div><div class="bk-price">₹79,870*</div><div class="bk-pnote">Approx. Ex-showroom</div></div>
+              <a class="wa-link" href="https://wa.me/919672000078?text=Hi%2C+I+want+details+on+the+Hero+Splendor%2B+XTEC." target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Enquire
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bk">
+          <div class="bk-img"><img src="20821.jpg" alt="Hero Splendor Plus" loading="lazy"/></div>
+          <div class="bk-info">
+            <div class="bk-tag">World's No.1</div>
+            <div class="bk-name">Hero Splendor+<br><span style="color:var(--chrome);font-size:1.1rem">Z-Black</span></div>
+            <div class="bk-sub">4 crore happy owners — and counting</div>
+            <div class="bk-specs">
+              <span class="bk-sp">97.2 cc</span>
+              <span class="bk-sp">62 kmpl</span>
+              <span class="bk-sp">112 kg</span>
+            </div>
+            <div class="bk-colors">
+              <div class="cc" style="background:#111111" title="Matte Canvas Black"></div>
+              <div class="cc" style="background:#7A7A7A" title="Sparkling Silver"></div>
+              <div class="cc" style="background:#1A3A6B" title="Sparkling Blue"></div>
+            </div>
+            <div class="bk-bottom">
+              <div><div class="bk-price">₹76,249*</div><div class="bk-pnote">Approx. Ex-showroom</div></div>
+              <a class="wa-link" href="https://wa.me/919672000078?text=Hi%2C+I+want+details+on+the+Hero+Splendor%2B+Standard." target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Enquire
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /row2 -->
+
+      <!-- ROW 3: 3 small cards for Xtreme 125R -->
+      <div class="bike-row row3">
+
+        <div class="bk small">
+          <div class="bk-img"><img src="20820.jpg" alt="Hero Xtreme 125R Stealth Black" loading="lazy"/></div>
+          <div class="bk-info">
+            <div class="bk-tag">Sporty 125</div>
+            <div class="bk-name">Xtreme 125R<br><span style="color:#888">Stealth</span></div>
+            <div class="bk-specs"><span class="bk-sp">124.7 cc</span><span class="bk-sp">57 kmpl</span></div>
+            <div class="bk-colors"><div class="cc" style="background:#111111"></div><div class="cc" style="background:#2A2A40"></div></div>
+            <div class="bk-bottom">
+              <div><div class="bk-price">₹92,127*</div><div class="bk-pnote">Ex-showroom</div></div>
+              <a class="wa-link" href="https://wa.me/919672000078?text=Hi%2C+I+want+details+on+the+Hero+Xtreme+125R+Stealth." target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Enquire</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bk small">
+          <div class="bk-img"><img src="20818.jpg" alt="Hero Xtreme 125R Racing Blue" loading="lazy"/></div>
+          <div class="bk-info">
+            <div class="bk-tag">Sporty 125</div>
+            <div class="bk-name">Xtreme 125R<br><span style="color:#4A8AFF">Racing Blue</span></div>
+            <div class="bk-specs"><span class="bk-sp">124.7 cc</span><span class="bk-sp">11.4 bhp</span></div>
+            <div class="bk-colors"><div class="cc" style="background:#1A4AAA"></div><div class="cc" style="background:#111111"></div></div>
+            <div class="bk-bottom">
+              <div><div class="bk-price">₹92,127*</div><div class="bk-pnote">Ex-showroom</div></div>
+              <a class="wa-link" href="https://wa.me/919672000078?text=Hi%2C+I+want+details+on+the+Hero+Xtreme+125R+Racing+Blue." target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Enquire</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Passion Plus placeholder card -->
+        <div class="bk small" style="background:#0E0D0C">
+          <div class="bk-img" style="background:#0A0A08;align-items:center;justify-content:center;flex-direction:column;gap:.5rem">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em;color:rgba(240,237,230,.15)">MORE MODELS</div>
+            <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;color:var(--fire);text-align:center;padding:0 1rem">Passion Plus · Glamour · Xpulse · Xtreme 160R &amp; more</div>
+          </div>
+          <div class="bk-info">
+            <div class="bk-tag">Full Range</div>
+            <div class="bk-name">More Hero<br><span style="color:var(--fire)">Bikes</span></div>
+            <div class="bk-sub">Ask us about any Hero model — we can source it for you.</div>
+            <div class="bk-bottom" style="margin-top:auto">
+              <a class="wa-link" href="https://wa.me/919672000078?text=Hi%2C+I+want+to+know+about+Hero+bikes+available+at+Jai+Bhawani+Motors." target="_blank" style="width:100%;justify-content:center">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Ask on WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /row3 -->
+
+    </div><!-- /bike-strip -->
+
+    <!-- WARRANTY -->
+    <div class="warr-block rev">
+      <div class="warr-head">5-Year Official Warranty</div>
+      <div class="warr-grid">
+        <div class="wi"><strong>5 Yrs / 70,000 km</strong><p>Complete cover — whichever limit is reached first. Factory-backed protection on every new Hero.</p></div>
+        <div class="wi"><strong>Service Every 90 Days</strong><p>Mandatory periodic servicing at an authorised Hero dealer to keep full warranty eligibility.</p></div>
+        <div class="wi"><strong>Genuine Parts Only</strong><p>Warranty valid only with official Hero MotoCorp parts fitted at an authorised centre like ours.</p></div>
+        <div class="wi"><strong>Structural Defects Covered</strong><p>Factory faults covered. Damage from accidents, modifications, or misuse is excluded per policy.</p></div>
+      </div>
+    </div>
+
+    <p style="margin-top:1rem;font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.1em;color:var(--chrome);text-align:center">* Approximate ex-showroom price. On-road price varies by registration, insurance &amp; local charges. Contact us for exact current price.</p>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec" id="services">
+  <div class="si">
+    <div class="eyebrow rev">Workshop</div>
+    <h2 class="rev">WE FIX <span class="accent">EVERYTHING</span><br><span class="ghost">WE SELL</span></h2>
+    <p class="lead rev">Hero-trained mechanics. OEM parts. Every service from routine maintenance to full engine overhaul — done right, the first time.</p>
+    <div class="srv-grid">
+      <div class="sv"><span class="sv-ico">🔧</span><div class="sv-name">Periodic Maintenance</div><ul><li>Engine oil &amp; filter replacement</li><li>Spark plug calibration</li><li>Air filter service</li><li>Multi-point safety check</li><li>Throttle &amp; brake adjustment</li></ul></div>
+      <div class="sv"><span class="sv-ico">⚙️</span><div class="sv-name">Engine &amp; Transmission</div><ul><li>Carburetor cleaning &amp; tuning</li><li>Valve clearance &amp; timing</li><li>Clutch plate replacement</li><li>Gear mechanism servicing</li><li>Engine top-overhaul</li></ul></div>
+      <div class="sv"><span class="sv-ico">🛞</span><div class="sv-name">Brakes &amp; Suspension</div><ul><li>Brake shoe &amp; disc pad fitting</li><li>Brake fluid flush &amp; bleed</li><li>Fork seal overhauling</li><li>Shock absorber servicing</li><li>Caliper cleaning</li></ul></div>
+      <div class="sv"><span class="sv-ico">⚡</span><div class="sv-name">Electrical Diagnostics</div><ul><li>Battery testing &amp; replacement</li><li>Starter motor repair</li><li>Wiring harness testing</li><li>Digital console fix</li><li>Lights &amp; indicator repair</li></ul></div>
+      <div class="sv"><span class="sv-ico">🏷️</span><div class="sv-name">Genuine Spares Counter</div><ul><li>OEM parts direct availability</li><li>Official gaskets &amp; seals</li><li>Throttle &amp; brake cables</li><li>Filters, bulbs &amp; consumables</li><li>On-spot installation</li></ul></div>
+      <div class="sv"><span class="sv-ico">🔩</span><div class="sv-name">Wheel &amp; Chain</div><ul><li>Chain cleaning &amp; lubrication</li><li>Slack adjustment &amp; tensioning</li><li>Wheel bearing replacement</li><li>Tyre pressure &amp; balancing</li><li>Rim &amp; spoke tightening</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROTOCOLS -->
+<section class="sec" id="protocols">
+  <div class="si">
+    <div class="eyebrow rev">Before You Visit</div>
+    <h2 class="rev">BUYING<br><span class="accent">MADE SIMPLE</span></h2>
+    <p class="lead rev">Everything you need to know about booking, delivery, and finance — before you walk in.</p>
+    <div class="proto-row">
+      <div class="pr"><div class="pr-accent"></div><div class="pr-num">01</div><div class="pr-title">Pre-Book with ₹1,500</div><p>A token of ₹1,500 secures your chosen bike. Fully deducted from your final bill — or 100% refunded if you change your mind.</p></div>
+      <div class="pr"><div class="pr-accent"></div><div class="pr-num">02</div><div class="pr-title">7-Day Special Order</div><p>Common models ready immediately. Custom colours or premium trims take 7 days to arrive from our regional Hero depot.</p></div>
+      <div class="pr"><div class="pr-accent"></div><div class="pr-num">03</div><div class="pr-title">Pickup in Pallu</div><p>All deliveries happen at our showroom. RTO registration, insurance and document signing are completed on-site as required by law.</p></div>
+      <div class="pr"><div class="pr-accent"></div><div class="pr-num">04</div><div class="pr-title">Rural EMI Available</div><p>Low-interest credit plans designed for agricultural households. Flexible schedules matching seasonal income. Standard local documents accepted.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec" id="contact">
+  <div class="si">
+    <div class="eyebrow rev">Get in touch</div>
+    <h2 class="rev">VISIT <span class="accent">US</span></h2>
+    <p class="lead rev">No appointment needed. Walk in any day except major holidays for a test ride, a quote, or a chat.</p>
+    <div class="contact-shell">
+      <div class="ct-list">
+        <div class="ct-row rev"><div class="ct-ico">📍</div><div><div class="ct-label">Address</div><div class="ct-val">Jai Bhawani Motors<br>Near Jaat Dharmshala, Mistri Market<br>Pallu, Rajasthan</div></div></div>
+        <div class="ct-row rev"><div class="ct-ico">📞</div><div><div class="ct-label">Phone</div><div class="ct-val"><a href="tel:9672000078">96720 00078</a></div></div></div>
+        <div class="ct-row rev"><div class="ct-ico">💬</div><div><div class="ct-label">WhatsApp</div><div class="ct-val"><a href="https://wa.me/919672000078?text=Hi%2C+I+would+like+to+enquire+about+Hero+bikes." target="_blank">+91 96720 00078</a></div></div></div>
+        <div class="ct-row rev"><div class="ct-ico">✉️</div><div><div class="ct-label">Email</div><div class="ct-val"><a href="mailto:mahindersinghbhati@gmail.com">mahindersinghbhati@gmail.com</a></div></div></div>
+        <div class="ct-row rev"><div class="ct-ico">🕐</div><div><div class="ct-label">Showroom Hours</div><div class="ct-val">Mon – Sat &nbsp; 9:00 AM – 7:00 PM<br>Sunday &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10:00 AM – 4:00 PM</div></div></div>
+        <div class="ct-btns rev">
+          <a href="tel:9672000078" class="btn-solid">📞 Call Now</a>
+          <a href="https://wa.me/919672000078?text=Hi%2C+I+would+like+to+enquire." target="_blank" class="btn-ghost" style="border-color:rgba(37,211,102,.35);color:#25D366">💬 WhatsApp</a>
+        </div>
+      </div>
+      <div class="ct-map rev">
+        <div class="map-pin">📍</div>
+        <strong>Jai Bhawani Motors</strong>
+        <p>Near Jaat Dharmshala<br>Mistri Market, Pallu</p>
+        <div class="fire-text">Rajasthan, India</div>
+        <p style="font-size:.75rem;margin-top:.3rem">Tap below for turn-by-turn directions</p>
+        <a href="https://maps.google.com/?q=Pallu+Hanumangarh+Rajasthan+Mistri+Market" target="_blank" class="btn-solid" style="margin-top:.8rem;font-size:.65rem">Open Google Maps ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="ft-logo">JAI BHAWANI <span>MOTORS</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.2em;color:var(--chrome);margin-top:.3rem;text-transform:uppercase">Authorised Hero MotoCorp Dealer · Pallu · 96720 00078</div>
+  </div>
+  <div class="ft-note">Prices shown are approximate ex-showroom. On-road prices vary by registration, insurance &amp; charges. Contact us for confirmed pricing. Hero MotoCorp® is a registered trademark of Hero MotoCorp Ltd. Warranty per Hero's official policy.</div>
+</footer>
+
+<!-- FLOAT WA -->
+<a class="fwa" href="https://wa.me/919672000078?text=Hi%2C+I+would+like+to+enquire+about+Hero+bikes+at+Jai+Bhawani+Motors%2C+Pallu." target="_blank" title="Chat on WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+// LOADER
+window.addEventListener('load',function(){
+  var l=document.getElementById('loader');
+  setTimeout(function(){
+    l.classList.add('fade');
+    setTimeout(function(){l.classList.add('gone')},700);
+  },1400);
+});
+
+// GAUGE COUNTER
+setTimeout(function(){
+  document.getElementById('gfill').classList.add('charged');
+  var pct=0,el=document.getElementById('gpct');
+  var iv=setInterval(function(){
+    pct++;
+    el.innerHTML=pct+'<small>%</small>';
+    if(pct>=87)clearInterval(iv);
+  },25);
+},600);
+
+// NAV
+document.querySelectorAll('#nlinks a').forEach(function(a){
+  a.addEventListener('click',function(){document.getElementById('nlinks').classList.remove('open')});
+});
+
+// SCROLL REVEAL
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}
+  });
+},{threshold:.08});
+document.querySelectorAll('.bk,.sv,.pr,.rev').forEach(function(el,i){
+  if(el.classList.contains('bk')||el.classList.contains('sv')||el.classList.contains('pr')){
+    el.style.transitionDelay=(i%3)*.09+'s';
+  }
+  io.observe(el);
+});
+</script>
+</body>
+</html>
