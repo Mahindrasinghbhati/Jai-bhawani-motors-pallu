@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Key bikes — Jai Bhawani Motors</title><meta name="description" content="Four new Hero launches at Jai Bhawani Motors, Pallu.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"></head>
+<body data-page="featured">
+<header><div class="w nav"><a class="logo" href="index.html"><span class="mark">JB</span><span><b>Jai Bhawani Motors</b><small>Authorised Hero MotoCorp Dealer · Pallu</small></span></a>
+<nav class="links" id="links"><a href="index.html">Home</a><a href="collection.html">All bikes</a><a href="featured.html" class=on>Key bikes</a><a href="exclusive.html">Exclusive</a><a href="offers.html">Offers & EMI</a><a href="contact.html">Service & contact</a></nav><a class="btn red sm" href="tel:9672000078">Call 96720 00078</a><button class="burger" id="bg" aria-label="Menu">☰</button></div></header>
+<main>
+<section class="sec" style="padding-bottom:0"><div class="w"><span class="tag">Key bikes</span><h2>Four new launches to know</h2><p class="lead">Swipe through, then read what makes each one worth a test ride.</p></div><div data-deck="featured" style="overflow:hidden"></div></section>
+<section class="sec" style="padding-top:0"><div class="w" id="ed"></div></section>
+<script>document.addEventListener("DOMContentLoaded",()=>{document.getElementById("ed").innerHTML=BIKES.filter(b=>b.featured).map((b,i)=>`<div class="ed reveal"><a class="tile" href="bike.html?id=${b.id}"><img src="images/bikes/${b.id}.jpg" alt="${b.name}" width="960" height="640" loading="lazy"><span class="badge">New</span></a><div><div class="num">0${i+1}</div><span class="tag">${b.type}</span><h2>${b.name}</h2><p class="lead">${desc(b)}</p><div class="pills" style="margin:14px 0">${pills(b)}</div>${priceBox(b)}<div class="cta" style="margin-top:14px"><a class="btn red" href="bike.html?id=${b.id}">Full details</a><a class="btn" href="contact.html?bike=${b.id}#enquire">Book a test ride</a></div></div></div>`).join("");document.querySelectorAll("#ed .reveal").forEach(e=>e.classList.add("in"))});</script></main>
+<footer><div class="w"><h3>Jai Bhawani Motors</h3><p>Authorised Hero MotoCorp dealer · Near Jaat Dharmshala, Mistri Market, Pallu, Rajasthan · 96720 00078</p><div class="fl"><a href="index.html">Home</a><a href="collection.html">All bikes</a><a href="featured.html" class=on>Key bikes</a><a href="exclusive.html">Exclusive</a><a href="offers.html">Offers & EMI</a><a href="contact.html">Service & contact</a></div>
+<p>Hero MotoCorp® is a registered trademark of Hero MotoCorp Ltd. Prices are ex-showroom for Pallu and are for guidance only; on-road price varies with registration, insurance and local charges. Warranty as per Hero's official policy.</p></div></footer>
+<a class="fab" data-wa="Hi, I would like to enquire about Hero bikes at Jai Bhawani Motors, Pallu." aria-label="WhatsApp">💬</a>
+<script src="js/data.js"></script><script src="js/main.js"></script></body></html>
